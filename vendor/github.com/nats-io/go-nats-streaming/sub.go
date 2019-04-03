@@ -33,7 +33,7 @@ const (
 // Msg is the client defined message, which includes proto, then back link to subscription.
 type Msg struct {
 	pb.MsgProto // MsgProto: Seq, Subject, Reply[opt], Data, Timestamp, CRC32[opt]
-	Sub Subscription
+	Sub         Subscription
 }
 
 // Subscriptions and Options

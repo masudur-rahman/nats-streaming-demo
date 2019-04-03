@@ -1336,14 +1336,14 @@ func sizeVarintS64PackedSlice(ptr pointer, tagsize int) int {
 }
 func sizeZigzag32Value(ptr pointer, tagsize int) int {
 	v := *ptr.toInt32()
-	return SizeVarint(uint64((uint32(v)<<1)^uint32((int32(v) >> 31)))) + tagsize
+	return SizeVarint(uint64((uint32(v)<<1)^uint32((int32(v)>>31)))) + tagsize
 }
 func sizeZigzag32ValueNoZero(ptr pointer, tagsize int) int {
 	v := *ptr.toInt32()
 	if v == 0 {
 		return 0
 	}
-	return SizeVarint(uint64((uint32(v)<<1)^uint32((int32(v) >> 31)))) + tagsize
+	return SizeVarint(uint64((uint32(v)<<1)^uint32((int32(v)>>31)))) + tagsize
 }
 func sizeZigzag32Ptr(ptr pointer, tagsize int) int {
 	p := ptr.getInt32Ptr()
@@ -1351,13 +1351,13 @@ func sizeZigzag32Ptr(ptr pointer, tagsize int) int {
 		return 0
 	}
 	v := *p
-	return SizeVarint(uint64((uint32(v)<<1)^uint32((int32(v) >> 31)))) + tagsize
+	return SizeVarint(uint64((uint32(v)<<1)^uint32((int32(v)>>31)))) + tagsize
 }
 func sizeZigzag32Slice(ptr pointer, tagsize int) int {
 	s := ptr.getInt32Slice()
 	n := 0
 	for _, v := range s {
-		n += SizeVarint(uint64((uint32(v)<<1)^uint32((int32(v) >> 31)))) + tagsize
+		n += SizeVarint(uint64((uint32(v)<<1)^uint32((int32(v)>>31)))) + tagsize
 	}
 	return n
 }
@@ -1374,14 +1374,14 @@ func sizeZigzag32PackedSlice(ptr pointer, tagsize int) int {
 }
 func sizeZigzag64Value(ptr pointer, tagsize int) int {
 	v := *ptr.toInt64()
-	return SizeVarint(uint64(v<<1)^uint64((int64(v) >> 63))) + tagsize
+	return SizeVarint(uint64(v<<1)^uint64((int64(v)>>63))) + tagsize
 }
 func sizeZigzag64ValueNoZero(ptr pointer, tagsize int) int {
 	v := *ptr.toInt64()
 	if v == 0 {
 		return 0
 	}
-	return SizeVarint(uint64(v<<1)^uint64((int64(v) >> 63))) + tagsize
+	return SizeVarint(uint64(v<<1)^uint64((int64(v)>>63))) + tagsize
 }
 func sizeZigzag64Ptr(ptr pointer, tagsize int) int {
 	p := *ptr.toInt64Ptr()
@@ -1389,13 +1389,13 @@ func sizeZigzag64Ptr(ptr pointer, tagsize int) int {
 		return 0
 	}
 	v := *p
-	return SizeVarint(uint64(v<<1)^uint64((int64(v) >> 63))) + tagsize
+	return SizeVarint(uint64(v<<1)^uint64((int64(v)>>63))) + tagsize
 }
 func sizeZigzag64Slice(ptr pointer, tagsize int) int {
 	s := *ptr.toInt64Slice()
 	n := 0
 	for _, v := range s {
-		n += SizeVarint(uint64(v<<1)^uint64((int64(v) >> 63))) + tagsize
+		n += SizeVarint(uint64(v<<1)^uint64((int64(v)>>63))) + tagsize
 	}
 	return n
 }
@@ -2062,7 +2062,7 @@ func appendVarintS64PackedSlice(b []byte, ptr pointer, wiretag uint64, _ bool) (
 func appendZigzag32Value(b []byte, ptr pointer, wiretag uint64, _ bool) ([]byte, error) {
 	v := *ptr.toInt32()
 	b = appendVarint(b, wiretag)
-	b = appendVarint(b, uint64((uint32(v)<<1)^uint32((int32(v) >> 31))))
+	b = appendVarint(b, uint64((uint32(v)<<1)^uint32((int32(v)>>31))))
 	return b, nil
 }
 func appendZigzag32ValueNoZero(b []byte, ptr pointer, wiretag uint64, _ bool) ([]byte, error) {
@@ -2071,7 +2071,7 @@ func appendZigzag32ValueNoZero(b []byte, ptr pointer, wiretag uint64, _ bool) ([
 		return b, nil
 	}
 	b = appendVarint(b, wiretag)
-	b = appendVarint(b, uint64((uint32(v)<<1)^uint32((int32(v) >> 31))))
+	b = appendVarint(b, uint64((uint32(v)<<1)^uint32((int32(v)>>31))))
 	return b, nil
 }
 func appendZigzag32Ptr(b []byte, ptr pointer, wiretag uint64, _ bool) ([]byte, error) {
@@ -2081,14 +2081,14 @@ func appendZigzag32Ptr(b []byte, ptr pointer, wiretag uint64, _ bool) ([]byte, e
 	}
 	b = appendVarint(b, wiretag)
 	v := *p
-	b = appendVarint(b, uint64((uint32(v)<<1)^uint32((int32(v) >> 31))))
+	b = appendVarint(b, uint64((uint32(v)<<1)^uint32((int32(v)>>31))))
 	return b, nil
 }
 func appendZigzag32Slice(b []byte, ptr pointer, wiretag uint64, _ bool) ([]byte, error) {
 	s := ptr.getInt32Slice()
 	for _, v := range s {
 		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64((uint32(v)<<1)^uint32((int32(v) >> 31))))
+		b = appendVarint(b, uint64((uint32(v)<<1)^uint32((int32(v)>>31))))
 	}
 	return b, nil
 }
@@ -2105,14 +2105,14 @@ func appendZigzag32PackedSlice(b []byte, ptr pointer, wiretag uint64, _ bool) ([
 	}
 	b = appendVarint(b, uint64(n))
 	for _, v := range s {
-		b = appendVarint(b, uint64((uint32(v)<<1)^uint32((int32(v) >> 31))))
+		b = appendVarint(b, uint64((uint32(v)<<1)^uint32((int32(v)>>31))))
 	}
 	return b, nil
 }
 func appendZigzag64Value(b []byte, ptr pointer, wiretag uint64, _ bool) ([]byte, error) {
 	v := *ptr.toInt64()
 	b = appendVarint(b, wiretag)
-	b = appendVarint(b, uint64(v<<1)^uint64((int64(v) >> 63)))
+	b = appendVarint(b, uint64(v<<1)^uint64((int64(v)>>63)))
 	return b, nil
 }
 func appendZigzag64ValueNoZero(b []byte, ptr pointer, wiretag uint64, _ bool) ([]byte, error) {
@@ -2121,7 +2121,7 @@ func appendZigzag64ValueNoZero(b []byte, ptr pointer, wiretag uint64, _ bool) ([
 		return b, nil
 	}
 	b = appendVarint(b, wiretag)
-	b = appendVarint(b, uint64(v<<1)^uint64((int64(v) >> 63)))
+	b = appendVarint(b, uint64(v<<1)^uint64((int64(v)>>63)))
 	return b, nil
 }
 func appendZigzag64Ptr(b []byte, ptr pointer, wiretag uint64, _ bool) ([]byte, error) {
@@ -2131,14 +2131,14 @@ func appendZigzag64Ptr(b []byte, ptr pointer, wiretag uint64, _ bool) ([]byte, e
 	}
 	b = appendVarint(b, wiretag)
 	v := *p
-	b = appendVarint(b, uint64(v<<1)^uint64((int64(v) >> 63)))
+	b = appendVarint(b, uint64(v<<1)^uint64((int64(v)>>63)))
 	return b, nil
 }
 func appendZigzag64Slice(b []byte, ptr pointer, wiretag uint64, _ bool) ([]byte, error) {
 	s := *ptr.toInt64Slice()
 	for _, v := range s {
 		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(v<<1)^uint64((int64(v) >> 63)))
+		b = appendVarint(b, uint64(v<<1)^uint64((int64(v)>>63)))
 	}
 	return b, nil
 }
@@ -2155,7 +2155,7 @@ func appendZigzag64PackedSlice(b []byte, ptr pointer, wiretag uint64, _ bool) ([
 	}
 	b = appendVarint(b, uint64(n))
 	for _, v := range s {
-		b = appendVarint(b, uint64(v<<1)^uint64((int64(v) >> 63)))
+		b = appendVarint(b, uint64(v<<1)^uint64((int64(v)>>63)))
 	}
 	return b, nil
 }
@@ -2363,12 +2363,12 @@ func appendBytesSlice(b []byte, ptr pointer, wiretag uint64, _ bool) ([]byte, er
 // u is the marshal info of the underlying message.
 func makeGroupMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		p := ptr.getPointer()
-		if p.isNil() {
-			return 0
-		}
-		return u.size(p) + 2*tagsize
-	},
+			p := ptr.getPointer()
+			if p.isNil() {
+				return 0
+			}
+			return u.size(p) + 2*tagsize
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			p := ptr.getPointer()
 			if p.isNil() {
@@ -2386,16 +2386,16 @@ func makeGroupMarshaler(u *marshalInfo) (sizer, marshaler) {
 // u is the marshal info of the underlying message.
 func makeGroupSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getPointerSlice()
-		n := 0
-		for _, v := range s {
-			if v.isNil() {
-				continue
+			s := ptr.getPointerSlice()
+			n := 0
+			for _, v := range s {
+				if v.isNil() {
+					continue
+				}
+				n += u.size(v) + 2*tagsize
 			}
-			n += u.size(v) + 2*tagsize
-		}
-		return n
-	},
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getPointerSlice()
 			var err error
@@ -2422,13 +2422,13 @@ func makeGroupSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 // u is the marshal info of the message.
 func makeMessageMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		p := ptr.getPointer()
-		if p.isNil() {
-			return 0
-		}
-		siz := u.size(p)
-		return siz + SizeVarint(uint64(siz)) + tagsize
-	},
+			p := ptr.getPointer()
+			if p.isNil() {
+				return 0
+			}
+			siz := u.size(p)
+			return siz + SizeVarint(uint64(siz)) + tagsize
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			p := ptr.getPointer()
 			if p.isNil() {
@@ -2445,17 +2445,17 @@ func makeMessageMarshaler(u *marshalInfo) (sizer, marshaler) {
 // u is the marshal info of the message.
 func makeMessageSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getPointerSlice()
-		n := 0
-		for _, v := range s {
-			if v.isNil() {
-				continue
+			s := ptr.getPointerSlice()
+			n := 0
+			for _, v := range s {
+				if v.isNil() {
+					continue
+				}
+				siz := u.size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
 			}
-			siz := u.size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getPointerSlice()
 			var err error
@@ -2538,18 +2538,18 @@ func makeMapMarshaler(f *reflect.StructField) (sizer, marshaler) {
 		}
 	}
 	return func(ptr pointer, tagsize int) int {
-		m := ptr.asPointerTo(t).Elem() // the map
-		n := 0
-		for _, k := range m.MapKeys() {
-			ki := k.Interface()
-			vi := m.MapIndex(k).Interface()
-			kaddr := toAddrPointer(&ki, false)             // pointer to key
-			vaddr := toAddrPointer(&vi, valIsPtr)          // pointer to value
-			siz := keySizer(kaddr, 1) + valSizer(vaddr, 1) // tag of key = 1 (size=1), tag of val = 2 (size=1)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			m := ptr.asPointerTo(t).Elem() // the map
+			n := 0
+			for _, k := range m.MapKeys() {
+				ki := k.Interface()
+				vi := m.MapIndex(k).Interface()
+				kaddr := toAddrPointer(&ki, false)             // pointer to key
+				vaddr := toAddrPointer(&vi, valIsPtr)          // pointer to value
+				siz := keySizer(kaddr, 1) + valSizer(vaddr, 1) // tag of key = 1 (size=1), tag of val = 2 (size=1)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, tag uint64, deterministic bool) ([]byte, error) {
 			m := ptr.asPointerTo(t).Elem() // the map
 			var err error
@@ -2587,15 +2587,15 @@ func makeOneOfMarshaler(fi *marshalFieldInfo, f *reflect.StructField) (sizer, ma
 	// Oneof field is an interface. We need to get the actual data type on the fly.
 	t := f.Type
 	return func(ptr pointer, _ int) int {
-		p := ptr.getInterfacePointer()
-		if p.isNil() {
-			return 0
-		}
-		v := ptr.asPointerTo(t).Elem().Elem().Elem() // *interface -> interface -> *struct -> struct
-		telem := v.Type()
-		e := fi.oneofElems[telem]
-		return e.sizer(p, e.tagsize)
-	},
+			p := ptr.getInterfacePointer()
+			if p.isNil() {
+				return 0
+			}
+			v := ptr.asPointerTo(t).Elem().Elem().Elem() // *interface -> interface -> *struct -> struct
+			telem := v.Type()
+			e := fi.oneofElems[telem]
+			return e.sizer(p, e.tagsize)
+		},
 		func(b []byte, ptr pointer, _ uint64, deterministic bool) ([]byte, error) {
 			p := ptr.getInterfacePointer()
 			if p.isNil() {

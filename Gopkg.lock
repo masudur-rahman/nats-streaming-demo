@@ -2,6 +2,22 @@
 
 
 [[projects]]
+  digest = "1:b67d9fb93495f20c1650448395a35d8c8a05cc1744bdd9986f5bc69d5d114f22"
+  name = "github.com/Unknwon/com"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "41959bdd855fb7db467f78865d5f9044507df1cd"
+  version = "v2"
+
+[[projects]]
+  branch = "master"
+  digest = "1:bdb17865b13e720add16eaa212872b4306c8521f367c7a7ff2c10cef1e7afdb1"
+  name = "github.com/go-macaron/inject"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "d8a0b8677191f4380287cfebd08e462217bac7ad"
+
+[[projects]]
   digest = "1:4652941215f23c7ad6546bab86964c72248a1134baa53f0df618661344ba5cac"
   name = "github.com/gogo/protobuf"
   packages = [
@@ -54,18 +70,38 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:d5891c5bca9c62e5d394ca26491d2b710a1dc08cedeb0ca8f9ac4c3305120b02"
+  digest = "1:b8fa1ff0fc20983395978b3f771bb10438accbfe19326b02e236c1d4bf1c91b2"
   name = "golang.org/x/crypto"
   packages = [
     "ed25519",
     "ed25519/internal/edwards25519",
+    "pbkdf2",
   ]
   pruneopts = "UT"
   revision = "a5d413f7728c81fb97d96a2b722368945f651e78"
 
+[[projects]]
+  digest = "1:d37c61a335d13bc49b3f90e9e13c8686e4548839b69c58549e727afb2245c454"
+  name = "gopkg.in/ini.v1"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "c85607071cf08ca1adaf48319cd1aa322e81d8c1"
+  version = "v1.42.0"
+
+[[projects]]
+  digest = "1:3d43a1d68f315a1c4c2cd20ee4d35c96695f17637502366341ac43b7813ea95f"
+  name = "gopkg.in/macaron.v1"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "dfcb80ca86e8534962c62812efd93209c7e600e7"
+  version = "v1.3.2"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  input-imports = ["github.com/nats-io/go-nats-streaming"]
+  input-imports = [
+    "github.com/nats-io/go-nats-streaming",
+    "gopkg.in/macaron.v1",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

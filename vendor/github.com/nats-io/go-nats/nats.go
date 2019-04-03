@@ -186,6 +186,7 @@ type CustomDialer interface {
 
 // Options can be used to create a customized connection.
 type Options struct {
+
 	// Url represents a single NATS server url to which the client
 	// will be connecting. If the Servers option is also set, it
 	// then becomes the first server in the Servers array.

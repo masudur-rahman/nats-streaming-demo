@@ -35,63 +35,63 @@ import (
 
 func makeStdDoubleValueMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		t := ptr.asPointerTo(u.typ).Interface().(*float64)
-		v := &float64Value{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		t := ptr.asPointerTo(u.typ).Interface().(*float64)
-		v := &float64Value{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
+			t := ptr.asPointerTo(u.typ).Interface().(*float64)
+			v := &float64Value{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			t := ptr.asPointerTo(u.typ).Interface().(*float64)
+			v := &float64Value{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
+			return b, nil
 		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdDoubleValuePtrMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		if ptr.isNil() {
-			return 0
-		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*float64)
-		v := &float64Value{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		if ptr.isNil() {
+			if ptr.isNil() {
+				return 0
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*float64)
+			v := &float64Value{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			if ptr.isNil() {
+				return b, nil
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*float64)
+			v := &float64Value{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
 			return b, nil
 		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*float64)
-		v := &float64Value{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
-		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdDoubleValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(u.typ)
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(float64)
-			v := &float64Value{t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(u.typ)
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(float64)
+				v := &float64Value{t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(u.typ)
 			for i := 0; i < s.Len(); i++ {
@@ -114,17 +114,17 @@ func makeStdDoubleValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 
 func makeStdDoubleValuePtrSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(reflect.PtrTo(u.typ))
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(*float64)
-			v := &float64Value{*t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(reflect.PtrTo(u.typ))
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(*float64)
+				v := &float64Value{*t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(reflect.PtrTo(u.typ))
 			for i := 0; i < s.Len(); i++ {
@@ -241,63 +241,63 @@ func makeStdDoubleValueSliceUnmarshaler(sub *unmarshalInfo, name string) unmarsh
 
 func makeStdFloatValueMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		t := ptr.asPointerTo(u.typ).Interface().(*float32)
-		v := &float32Value{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		t := ptr.asPointerTo(u.typ).Interface().(*float32)
-		v := &float32Value{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
+			t := ptr.asPointerTo(u.typ).Interface().(*float32)
+			v := &float32Value{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			t := ptr.asPointerTo(u.typ).Interface().(*float32)
+			v := &float32Value{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
+			return b, nil
 		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdFloatValuePtrMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		if ptr.isNil() {
-			return 0
-		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*float32)
-		v := &float32Value{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		if ptr.isNil() {
+			if ptr.isNil() {
+				return 0
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*float32)
+			v := &float32Value{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			if ptr.isNil() {
+				return b, nil
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*float32)
+			v := &float32Value{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
 			return b, nil
 		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*float32)
-		v := &float32Value{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
-		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdFloatValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(u.typ)
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(float32)
-			v := &float32Value{t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(u.typ)
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(float32)
+				v := &float32Value{t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(u.typ)
 			for i := 0; i < s.Len(); i++ {
@@ -320,17 +320,17 @@ func makeStdFloatValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 
 func makeStdFloatValuePtrSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(reflect.PtrTo(u.typ))
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(*float32)
-			v := &float32Value{*t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(reflect.PtrTo(u.typ))
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(*float32)
+				v := &float32Value{*t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(reflect.PtrTo(u.typ))
 			for i := 0; i < s.Len(); i++ {
@@ -447,63 +447,63 @@ func makeStdFloatValueSliceUnmarshaler(sub *unmarshalInfo, name string) unmarsha
 
 func makeStdInt64ValueMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		t := ptr.asPointerTo(u.typ).Interface().(*int64)
-		v := &int64Value{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		t := ptr.asPointerTo(u.typ).Interface().(*int64)
-		v := &int64Value{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
+			t := ptr.asPointerTo(u.typ).Interface().(*int64)
+			v := &int64Value{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			t := ptr.asPointerTo(u.typ).Interface().(*int64)
+			v := &int64Value{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
+			return b, nil
 		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdInt64ValuePtrMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		if ptr.isNil() {
-			return 0
-		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*int64)
-		v := &int64Value{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		if ptr.isNil() {
+			if ptr.isNil() {
+				return 0
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*int64)
+			v := &int64Value{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			if ptr.isNil() {
+				return b, nil
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*int64)
+			v := &int64Value{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
 			return b, nil
 		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*int64)
-		v := &int64Value{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
-		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdInt64ValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(u.typ)
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(int64)
-			v := &int64Value{t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(u.typ)
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(int64)
+				v := &int64Value{t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(u.typ)
 			for i := 0; i < s.Len(); i++ {
@@ -526,17 +526,17 @@ func makeStdInt64ValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 
 func makeStdInt64ValuePtrSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(reflect.PtrTo(u.typ))
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(*int64)
-			v := &int64Value{*t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(reflect.PtrTo(u.typ))
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(*int64)
+				v := &int64Value{*t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(reflect.PtrTo(u.typ))
 			for i := 0; i < s.Len(); i++ {
@@ -653,63 +653,63 @@ func makeStdInt64ValueSliceUnmarshaler(sub *unmarshalInfo, name string) unmarsha
 
 func makeStdUInt64ValueMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		t := ptr.asPointerTo(u.typ).Interface().(*uint64)
-		v := &uint64Value{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		t := ptr.asPointerTo(u.typ).Interface().(*uint64)
-		v := &uint64Value{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
+			t := ptr.asPointerTo(u.typ).Interface().(*uint64)
+			v := &uint64Value{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			t := ptr.asPointerTo(u.typ).Interface().(*uint64)
+			v := &uint64Value{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
+			return b, nil
 		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdUInt64ValuePtrMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		if ptr.isNil() {
-			return 0
-		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*uint64)
-		v := &uint64Value{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		if ptr.isNil() {
+			if ptr.isNil() {
+				return 0
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*uint64)
+			v := &uint64Value{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			if ptr.isNil() {
+				return b, nil
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*uint64)
+			v := &uint64Value{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
 			return b, nil
 		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*uint64)
-		v := &uint64Value{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
-		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdUInt64ValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(u.typ)
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(uint64)
-			v := &uint64Value{t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(u.typ)
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(uint64)
+				v := &uint64Value{t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(u.typ)
 			for i := 0; i < s.Len(); i++ {
@@ -732,17 +732,17 @@ func makeStdUInt64ValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 
 func makeStdUInt64ValuePtrSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(reflect.PtrTo(u.typ))
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(*uint64)
-			v := &uint64Value{*t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(reflect.PtrTo(u.typ))
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(*uint64)
+				v := &uint64Value{*t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(reflect.PtrTo(u.typ))
 			for i := 0; i < s.Len(); i++ {
@@ -859,63 +859,63 @@ func makeStdUInt64ValueSliceUnmarshaler(sub *unmarshalInfo, name string) unmarsh
 
 func makeStdInt32ValueMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		t := ptr.asPointerTo(u.typ).Interface().(*int32)
-		v := &int32Value{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		t := ptr.asPointerTo(u.typ).Interface().(*int32)
-		v := &int32Value{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
+			t := ptr.asPointerTo(u.typ).Interface().(*int32)
+			v := &int32Value{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			t := ptr.asPointerTo(u.typ).Interface().(*int32)
+			v := &int32Value{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
+			return b, nil
 		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdInt32ValuePtrMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		if ptr.isNil() {
-			return 0
-		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*int32)
-		v := &int32Value{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		if ptr.isNil() {
+			if ptr.isNil() {
+				return 0
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*int32)
+			v := &int32Value{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			if ptr.isNil() {
+				return b, nil
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*int32)
+			v := &int32Value{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
 			return b, nil
 		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*int32)
-		v := &int32Value{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
-		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdInt32ValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(u.typ)
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(int32)
-			v := &int32Value{t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(u.typ)
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(int32)
+				v := &int32Value{t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(u.typ)
 			for i := 0; i < s.Len(); i++ {
@@ -938,17 +938,17 @@ func makeStdInt32ValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 
 func makeStdInt32ValuePtrSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(reflect.PtrTo(u.typ))
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(*int32)
-			v := &int32Value{*t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(reflect.PtrTo(u.typ))
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(*int32)
+				v := &int32Value{*t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(reflect.PtrTo(u.typ))
 			for i := 0; i < s.Len(); i++ {
@@ -1065,63 +1065,63 @@ func makeStdInt32ValueSliceUnmarshaler(sub *unmarshalInfo, name string) unmarsha
 
 func makeStdUInt32ValueMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		t := ptr.asPointerTo(u.typ).Interface().(*uint32)
-		v := &uint32Value{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		t := ptr.asPointerTo(u.typ).Interface().(*uint32)
-		v := &uint32Value{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
+			t := ptr.asPointerTo(u.typ).Interface().(*uint32)
+			v := &uint32Value{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			t := ptr.asPointerTo(u.typ).Interface().(*uint32)
+			v := &uint32Value{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
+			return b, nil
 		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdUInt32ValuePtrMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		if ptr.isNil() {
-			return 0
-		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*uint32)
-		v := &uint32Value{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		if ptr.isNil() {
+			if ptr.isNil() {
+				return 0
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*uint32)
+			v := &uint32Value{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			if ptr.isNil() {
+				return b, nil
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*uint32)
+			v := &uint32Value{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
 			return b, nil
 		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*uint32)
-		v := &uint32Value{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
-		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdUInt32ValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(u.typ)
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(uint32)
-			v := &uint32Value{t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(u.typ)
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(uint32)
+				v := &uint32Value{t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(u.typ)
 			for i := 0; i < s.Len(); i++ {
@@ -1144,17 +1144,17 @@ func makeStdUInt32ValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 
 func makeStdUInt32ValuePtrSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(reflect.PtrTo(u.typ))
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(*uint32)
-			v := &uint32Value{*t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(reflect.PtrTo(u.typ))
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(*uint32)
+				v := &uint32Value{*t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(reflect.PtrTo(u.typ))
 			for i := 0; i < s.Len(); i++ {
@@ -1271,63 +1271,63 @@ func makeStdUInt32ValueSliceUnmarshaler(sub *unmarshalInfo, name string) unmarsh
 
 func makeStdBoolValueMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		t := ptr.asPointerTo(u.typ).Interface().(*bool)
-		v := &boolValue{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		t := ptr.asPointerTo(u.typ).Interface().(*bool)
-		v := &boolValue{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
+			t := ptr.asPointerTo(u.typ).Interface().(*bool)
+			v := &boolValue{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			t := ptr.asPointerTo(u.typ).Interface().(*bool)
+			v := &boolValue{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
+			return b, nil
 		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdBoolValuePtrMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		if ptr.isNil() {
-			return 0
-		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*bool)
-		v := &boolValue{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		if ptr.isNil() {
+			if ptr.isNil() {
+				return 0
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*bool)
+			v := &boolValue{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			if ptr.isNil() {
+				return b, nil
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*bool)
+			v := &boolValue{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
 			return b, nil
 		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*bool)
-		v := &boolValue{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
-		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdBoolValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(u.typ)
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(bool)
-			v := &boolValue{t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(u.typ)
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(bool)
+				v := &boolValue{t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(u.typ)
 			for i := 0; i < s.Len(); i++ {
@@ -1350,17 +1350,17 @@ func makeStdBoolValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 
 func makeStdBoolValuePtrSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(reflect.PtrTo(u.typ))
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(*bool)
-			v := &boolValue{*t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(reflect.PtrTo(u.typ))
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(*bool)
+				v := &boolValue{*t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(reflect.PtrTo(u.typ))
 			for i := 0; i < s.Len(); i++ {
@@ -1477,63 +1477,63 @@ func makeStdBoolValueSliceUnmarshaler(sub *unmarshalInfo, name string) unmarshal
 
 func makeStdStringValueMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		t := ptr.asPointerTo(u.typ).Interface().(*string)
-		v := &stringValue{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		t := ptr.asPointerTo(u.typ).Interface().(*string)
-		v := &stringValue{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
+			t := ptr.asPointerTo(u.typ).Interface().(*string)
+			v := &stringValue{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			t := ptr.asPointerTo(u.typ).Interface().(*string)
+			v := &stringValue{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
+			return b, nil
 		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdStringValuePtrMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		if ptr.isNil() {
-			return 0
-		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*string)
-		v := &stringValue{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		if ptr.isNil() {
+			if ptr.isNil() {
+				return 0
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*string)
+			v := &stringValue{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			if ptr.isNil() {
+				return b, nil
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*string)
+			v := &stringValue{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
 			return b, nil
 		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*string)
-		v := &stringValue{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
-		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdStringValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(u.typ)
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(string)
-			v := &stringValue{t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(u.typ)
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(string)
+				v := &stringValue{t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(u.typ)
 			for i := 0; i < s.Len(); i++ {
@@ -1556,17 +1556,17 @@ func makeStdStringValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 
 func makeStdStringValuePtrSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(reflect.PtrTo(u.typ))
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(*string)
-			v := &stringValue{*t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(reflect.PtrTo(u.typ))
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(*string)
+				v := &stringValue{*t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(reflect.PtrTo(u.typ))
 			for i := 0; i < s.Len(); i++ {
@@ -1683,63 +1683,63 @@ func makeStdStringValueSliceUnmarshaler(sub *unmarshalInfo, name string) unmarsh
 
 func makeStdBytesValueMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		t := ptr.asPointerTo(u.typ).Interface().(*[]byte)
-		v := &bytesValue{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		t := ptr.asPointerTo(u.typ).Interface().(*[]byte)
-		v := &bytesValue{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
+			t := ptr.asPointerTo(u.typ).Interface().(*[]byte)
+			v := &bytesValue{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			t := ptr.asPointerTo(u.typ).Interface().(*[]byte)
+			v := &bytesValue{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
+			return b, nil
 		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdBytesValuePtrMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		if ptr.isNil() {
-			return 0
-		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*[]byte)
-		v := &bytesValue{*t}
-		siz := Size(v)
-		return tagsize + SizeVarint(uint64(siz)) + siz
-	}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
-		if ptr.isNil() {
+			if ptr.isNil() {
+				return 0
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*[]byte)
+			v := &bytesValue{*t}
+			siz := Size(v)
+			return tagsize + SizeVarint(uint64(siz)) + siz
+		}, func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
+			if ptr.isNil() {
+				return b, nil
+			}
+			t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*[]byte)
+			v := &bytesValue{*t}
+			buf, err := Marshal(v)
+			if err != nil {
+				return nil, err
+			}
+			b = appendVarint(b, wiretag)
+			b = appendVarint(b, uint64(len(buf)))
+			b = append(b, buf...)
 			return b, nil
 		}
-		t := ptr.asPointerTo(reflect.PtrTo(u.typ)).Elem().Interface().(*[]byte)
-		v := &bytesValue{*t}
-		buf, err := Marshal(v)
-		if err != nil {
-			return nil, err
-		}
-		b = appendVarint(b, wiretag)
-		b = appendVarint(b, uint64(len(buf)))
-		b = append(b, buf...)
-		return b, nil
-	}
 }
 
 func makeStdBytesValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(u.typ)
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().([]byte)
-			v := &bytesValue{t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(u.typ)
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().([]byte)
+				v := &bytesValue{t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(u.typ)
 			for i := 0; i < s.Len(); i++ {
@@ -1762,17 +1762,17 @@ func makeStdBytesValueSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 
 func makeStdBytesValuePtrSliceMarshaler(u *marshalInfo) (sizer, marshaler) {
 	return func(ptr pointer, tagsize int) int {
-		s := ptr.getSlice(reflect.PtrTo(u.typ))
-		n := 0
-		for i := 0; i < s.Len(); i++ {
-			elem := s.Index(i)
-			t := elem.Interface().(*[]byte)
-			v := &bytesValue{*t}
-			siz := Size(v)
-			n += siz + SizeVarint(uint64(siz)) + tagsize
-		}
-		return n
-	},
+			s := ptr.getSlice(reflect.PtrTo(u.typ))
+			n := 0
+			for i := 0; i < s.Len(); i++ {
+				elem := s.Index(i)
+				t := elem.Interface().(*[]byte)
+				v := &bytesValue{*t}
+				siz := Size(v)
+				n += siz + SizeVarint(uint64(siz)) + tagsize
+			}
+			return n
+		},
 		func(b []byte, ptr pointer, wiretag uint64, deterministic bool) ([]byte, error) {
 			s := ptr.getSlice(reflect.PtrTo(u.typ))
 			for i := 0; i < s.Len(); i++ {
