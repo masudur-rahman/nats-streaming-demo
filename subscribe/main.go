@@ -14,7 +14,8 @@ import (
 )
 
 func ProcessMsg(msg *stan.Msg) {
-	fmt.Println(string(msg.Data))
+	fmt.Printf("Received on [%s]: '%s'\n", msg.Subject, msg)
+	msg.Ack()
 }
 
 func logCloser(c io.Closer) {
@@ -26,23 +27,30 @@ func logCloser(c io.Closer) {
 func main() {
 	conn, err := stan.Connect(
 		api.ClusterID,
-		api.ClientID,
+		api.SubClientID,
 		stan.NatsURL(stan.DefaultNatsURL),
 		stan.ConnectWait(10*time.Second),
+		stan.SetConnectionLostHandler(func(_ stan.Conn, reason error) {
+			log.Fatalln("Connection lost, reason:", reason)
+		}),
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Can't connect: %v.\nMake sure a NATS Streaming Server is running at: %s", err, stan.DefaultNatsURL)
 	}
 	defer logCloser(conn)
+
+	log.Printf("Connected to %s clusterID: [%s] clientID: [%s]\n", stan.DefaultNatsURL, api.ClusterID, api.SubClientID)
 
 	args := os.Args
 
 	subj := args[1]
 	log.Println(subj)
 
-	sub, err := conn.Subscribe(
+	sub, err := conn.QueueSubscribe(
 		subj,
-		ProcessMsg,
+		"test", func(msg *stan.Msg) {
+			ProcessMsg(msg)
+		}, stan.SetManualAckMode(), stan.DurableName("i-remember"), stan.DeliverAllAvailable(), stan.AckWait(time.Second),
 	)
 	defer logCloser(sub)
 

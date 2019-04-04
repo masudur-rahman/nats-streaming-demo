@@ -1,6 +1,7 @@
 package api
 
 var (
-	ClusterID = "test-cluster"
-	ClientID  = "test-client"
+	ClusterID   = "test-cluster"
+	PubClientID = "pub-client"
+	SubClientID = "sub-client"
 )

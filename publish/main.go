@@ -20,21 +20,26 @@ func logCloser(c io.Closer) {
 func main() {
 	conn, err := stan.Connect(
 		api.ClusterID,
-		api.ClientID,
+		api.PubClientID,
 		stan.NatsURL(stan.DefaultNatsURL),
 		stan.ConnectWait(10*time.Second),
+		stan.SetConnectionLostHandler(func(_ stan.Conn, reason error) {
+			log.Fatalln("Connection lost, reason:", reason)
+		}),
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Can't connect: %v.\nMake sure a NATS Streaming Server is running at: %s", err, stan.DefaultNatsURL)
 	}
 	defer logCloser(conn)
 
+	log.Printf("Connected to %s clusterID: [%s] clientID: [%s]\n", stan.DefaultNatsURL, api.ClusterID, api.PubClientID)
+
 	args := os.Args
 
-	subj, msg := args[1], []byte(args[2])
+	subj, msg := args[1], args[2]
 	log.Println(subj, msg)
 
-	if err = conn.Publish(subj, msg); err != nil {
+	if err = conn.Publish(subj, []byte(msg)); err != nil {
 		log.Fatalln("Error during publish:", err)
 	}
 }
