@@ -8,7 +8,7 @@
 #### Run nats-streaming-server in one window
 
 - `cd /home/$USER/go/src/github.com/masudur-rahman/nats-streaming-demo`
-- `./nats-streaming-demo`
+- `./nats-streaming-server`
 
 #### Subscribe to NATS-Streaming in second window
 
